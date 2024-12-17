@@ -1374,6 +1374,7 @@ var AuthActionType;
     AuthActionType["REFRESH_TOKEN"] = "REFRESH_TOKEN";
 })(AuthActionType || (AuthActionType = {}));
 const initialState = {
+    isStale: true,
     accessToken: undefined,
     idToken: undefined,
     userInfo: undefined,
@@ -1385,6 +1386,7 @@ const reducer = (state, action) => {
         case AuthActionType.REFRESH_TOKEN:
             return {
                 ...state,
+                isStale: action.payload?.isStale !== undefined ? action.payload.isStale : true,
                 accessToken: action.payload?.accessToken,
                 idToken: action.payload?.idToken,
                 userInfo: action.payload?.userInfo,
@@ -1631,6 +1633,7 @@ const useSSO = () => {
         };
         const user = state?.userInfo ? normalizeUser(state.userInfo) : undefined;
         const refreshToken = async (backendURL) => {
+            dispatch({ type: REFRESH_TOKEN, payload: { isStale: true } });
             const url = `${backendURL ?? '/api'}/auth/token`;
             try {
                 const response = await fetch(url, {
@@ -1639,6 +1642,7 @@ const useSSO = () => {
                 });
                 if (!response.ok) {
                     sessionStorage.clear();
+                    dispatch({ type: REFRESH_TOKEN, payload: { isStale: false } });
                     return;
                 }
                 const data = await response.json();
@@ -1652,7 +1656,7 @@ const useSSO = () => {
                 sessionStorage.setItem('citz-imb-sso-logging-in', 'false');
                 dispatch({
                     type: REFRESH_TOKEN,
-                    payload: { accessToken: access_token, idToken: id_token, userInfo },
+                    payload: { isStale: false, accessToken: access_token, idToken: id_token, userInfo },
                 });
                 setTimeout(() => refreshToken(), (expires_in - 15) * 1000);
             }

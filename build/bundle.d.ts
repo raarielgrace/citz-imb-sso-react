@@ -57,12 +57,14 @@ type AuthService = {
 type AuthAction = {
     type: AuthActionType;
     payload?: {
+        isStale: boolean;
         accessToken?: string;
         idToken?: string;
         userInfo?: OriginalSSOUser;
     };
 };
 type AuthState = {
+    isStale: boolean;
     accessToken?: string | undefined;
     idToken?: string | undefined;
     userInfo?: OriginalSSOUser | undefined;
