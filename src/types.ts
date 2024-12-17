@@ -62,6 +62,7 @@ export type AuthService = {
 export type AuthAction = {
   type: AuthActionType;
   payload?: {
+    isStale: boolean;
     accessToken?: string;
     idToken?: string;
     userInfo?: OriginalSSOUser;
@@ -69,6 +70,7 @@ export type AuthAction = {
 };
 
 export type AuthState = {
+  isStale: boolean;
   accessToken?: string | undefined;
   idToken?: string | undefined;
   userInfo?: OriginalSSOUser | undefined;

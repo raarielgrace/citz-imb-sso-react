@@ -83,6 +83,7 @@ export const useSSO = (): AuthService => {
 
     // Get a new access token using the refresh token.
     const refreshToken = async (backendURL?: string) => {
+      dispatch({ type: REFRESH_TOKEN, payload: { isStale: true } });
       const url = `${backendURL ?? '/api'}/auth/token`;
 
       try {
@@ -94,6 +95,7 @@ export const useSSO = (): AuthService => {
         // Exit if response isn't 200.
         if (!response.ok) {
           sessionStorage.clear();
+          dispatch({ type: REFRESH_TOKEN, payload: { isStale: false } });
           return;
         }
 
@@ -112,7 +114,7 @@ export const useSSO = (): AuthService => {
 
         dispatch({
           type: REFRESH_TOKEN,
-          payload: { accessToken: access_token, idToken: id_token, userInfo },
+          payload: { isStale: false, accessToken: access_token, idToken: id_token, userInfo },
         });
 
         // Re-call refreshToken 15 seconds before expiry.

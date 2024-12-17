@@ -7,6 +7,7 @@ describe('SSO Reducer', () => {
   // Test case: handles logout action correctly
   it('handles logout action correctly', () => {
     const currentState: AuthState = {
+      isStale: false,
       accessToken: 'dummy_access_token',
       idToken: 'dummy_id_token',
       userInfo: mockOriginalSSOUserIDIR,
@@ -19,6 +20,7 @@ describe('SSO Reducer', () => {
   // Test case: handles refresh token action correctly
   it('handles refresh token action correctly', () => {
     const currentState: AuthState = {
+      isStale: true,
       accessToken: 'old_access_token',
       idToken: 'old_id_token',
       userInfo: mockOriginalSSOUserIDIR,
@@ -26,12 +28,14 @@ describe('SSO Reducer', () => {
     const action: AuthAction = {
       type: AuthActionType.REFRESH_TOKEN,
       payload: {
+        isStale: false,
         accessToken: 'new_access_token',
         idToken: 'new_id_token',
         userInfo: mockOriginalSSOUserIDIR,
       },
     };
     const newState = reducer(currentState, action);
+    expect(newState.isStale).toBe(false);
     expect(newState.accessToken).toBe('new_access_token');
     expect(newState.idToken).toBe('new_id_token');
     expect(newState.userInfo).toEqual(mockOriginalSSOUserIDIR);

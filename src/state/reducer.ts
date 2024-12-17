@@ -9,6 +9,7 @@ export enum AuthActionType {
 
 // Initial authentication state.
 export const initialState: AuthState = {
+  isStale: true,
   accessToken: undefined,
   idToken: undefined,
   userInfo: undefined,
@@ -27,6 +28,7 @@ export const reducer = (state: AuthState, action: AuthAction): AuthState => {
     case AuthActionType.REFRESH_TOKEN:
       return {
         ...state,
+        isStale: action.payload?.isStale !== undefined ? action.payload.isStale : true,
         accessToken: action.payload?.accessToken,
         idToken: action.payload?.idToken,
         userInfo: action.payload?.userInfo,
