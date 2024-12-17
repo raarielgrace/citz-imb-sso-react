@@ -77,6 +77,7 @@ describe('useSSO', () => {
     jest.spyOn(React, 'useContext').mockImplementation(() =>
       createMockAuthContextValue({
         state: {
+          isStale: false,
           accessToken: 'dummy_access_token',
           userInfo: mockOriginalSSOUserIDIR,
           idToken: 'dummy_id_token',
@@ -253,6 +254,7 @@ describe('useSSO', () => {
     jest.spyOn(React, 'useContext').mockImplementation(() =>
       createMockAuthContextValue({
         state: {
+          isStale: false,
           accessToken: 'dummy_access_token',
           userInfo: mockUserWithoutRoles,
           idToken: 'dummy_id_token',
